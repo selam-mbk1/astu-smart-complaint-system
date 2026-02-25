@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white p-4 shadow">
+
+<div id="chatbox" class="h-64 overflow-y-scroll mb-3"></div>
+
+<input id="message" class="border p-2 w-full">
+
+<button onclick="sendMessage()"
+        class="bg-blue-500 text-white px-4 py-2 mt-2">
+Send
+</button>
+
+</div>
+
+<script>
+
+function sendMessage(){
+
+let msg = document.getElementById("message").value;
+
+fetch("/chatbot/", {
+method: "POST",
+headers: {"Content-Type": "application/x-www-form-urlencoded"},
+body: "message=" + msg
+})
+.then(res => res.json())
+.then(data => {
+
+document.getElementById("chatbox").innerHTML +=
+"<p><b>You:</b> " + msg + "</p>" +
+"<p><b>Bot:</b> " + data.response + "</p>";
+
+});
+
+}
+
+</script>
+
+{% endblock %}
