@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>AI Assistant</h2>
+
+<div id="chatbox" class="bg-white p-4 h-64 overflow-y-scroll"></div>
+
+<input id="msg" class="border p-2 w-full">
+<button onclick="sendMsg()" class="bg-blue-500 text-white px-4 py-2">Send</button>
+
+<script>
+function sendMsg(){
+    let msg = document.getElementById('msg').value
+
+    fetch('/chatbot/api/', {
+        method:'POST',
+        headers:{
+            'Content-Type':'application/x-www-form-urlencoded',
+            'X-CSRFToken':'{{ csrf_token }}'
+        },
+        body:'message='+msg
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        document.getElementById('chatbox').innerHTML += "<p>"+data.response+"</p>"
+    })
+}
+</script>
+
+{% endblock %}

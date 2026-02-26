@@ -1,20 +1,22 @@
 import json
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-with open('chatbot/responses.json') as f:
-    data = json.load(f)
-
+def chatbot_page(request):
+    return render(request, 'chatbot/chat.html')
 
 @csrf_exempt
-def chatbot_response(request):
+def chatbot_api(request):
+    if request.method == 'POST':
+        user_message = request.POST.get('message', '').lower()
+        with open('chatbot/data.json') as f:
+            data = json.load(f)
 
-    message = request.POST.get("message", "").lower()
+        response = "Sorry, I don't understand."
+        for item in data:
+            if user_message in item['question'].lower():
+                response = item['answer']
+                break
 
-    for key in data:
-        if key in message:
-            return JsonResponse({"response": data[key]})
-
-    return JsonResponse({
-        "response": "Please submit your complaint through the system."
-    })
+        return JsonResponse({'response': response})

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="text-2xl mb-4">Dashboard</h1>
+
+<div class="grid grid-cols-3 gap-4">
+    <div class="bg-white p-4 shadow">Total: {{ total }}</div>
+    <div class="bg-white p-4 shadow">Resolved: {{ resolved }}</div>
+    <div class="bg-white p-4 shadow">Open: {{ open }}</div>
+</div>
+
+{% endblock %}

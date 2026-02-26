@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from django.conf import settings
+from django.conf.urls.static import static
+
 from complaints.views import ComplaintViewSet
-from chatbot.views import chatbot_response
 from dashboard.views import dashboard
+from chatbot.views import chatbot_page, chatbot_api
 
 router = DefaultRouter()
 router.register(r'complaints', ComplaintViewSet)
@@ -27,6 +30,11 @@ router.register(r'complaints', ComplaintViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('chatbot/', chatbot_response),
-    path('dashboard/', dashboard),
+    path('chatbot/', include('chatbot.urls')),
+    path('', include('dashboard.urls')),
+    path('accounts/', include('accounts.urls')),
+    path('complaints/', include('complaints.urls')),
+    
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
