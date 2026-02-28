@@ -7,6 +7,20 @@
         Staff Dashboard - Department: {{ request.user.department }}
     </h1>
 
+    <div class="mb-4">
+    <h2 class="text-xl font-semibold mb-2">Notifications</h2>
+    <ul class="border rounded p-3 bg-gray-50">
+        {% for note in notifications %}
+            <li class="p-2 border-b {% if not note.read %}bg-blue-50{% endif %}">
+                {{ note.message }}
+                <span class="text-xs text-gray-500">{{ note.created_at|date:"M d, H:i" }}</span>
+            </li>
+        {% empty %}
+            <li>No notifications</li>
+        {% endfor %}
+    </ul>
+    </div>
+
     <table class="w-full bg-white shadow rounded">
         <thead class="bg-gray-200">
             <tr class="text-center">

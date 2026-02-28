@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.db.models import Count
 
 
+
 from accounts.decorators import role_required
 from .models import Complaint, Notification, Category
 from .serializers import ComplaintSerializer
@@ -60,6 +61,35 @@ def submit_complaint(request):
         complaint.user = request.user
         complaint.status = "open"
         complaint.save()
+        
+        staff_members = User.objects.filter(
+            role='staff',
+            department=complaint.category.department
+    )
+        print("Complaint category department:", complaint.category.department)
+        print("Staff members to notify:", list(staff_members))
+        
+        for staff in staff_members:
+            Notification.objects.create(
+                user=staff,
+                message=f"New complaint submitted by {request.user.username}: {complaint.title}"
+            )
+    
+    
+        
+        
+        
+        # 🔔 Notify staff in the same department
+        staff_members = User.objects.filter(
+            role='staff',
+            department=complaint.category.department
+        )
+
+        for staff in staff_members:
+            Notification.objects.create(
+                user=staff,
+                message=f"New complaint submitted: {complaint.title} by {request.user.username}"
+            )
 
         # 🔔 Student notification
         Notification.objects.create(
@@ -76,7 +106,8 @@ def submit_complaint(request):
                 recipient_list=[request.user.email],
                 fail_silently=True,
             )
-
+            
+        
         # 🔔 Notify admin(s)
         admins = User.objects.filter(role="admin", is_active=True)
         for admin in admins:
@@ -118,7 +149,13 @@ def staff_dashboard(request):
     complaints = Complaint.objects.filter(
         category__department=request.user.department
     ).order_by("-created_at")
-    return render(request, "complaints/staff_dashboard.html", {"complaints": complaints})
+    notifications = Notification.objects.filter(user=request.user).order_by("-created_at")[:10]
+
+    context = {
+        "complaints": complaints,
+        "notifications": notifications,
+    }
+    return render(request, "complaints/staff_dashboard.html", context)
 
 
 @login_required
