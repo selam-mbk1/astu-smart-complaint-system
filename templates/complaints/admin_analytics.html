@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-blue-600 mb-6">Admin Analytics Dashboard</h1>
+
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-white p-4 rounded shadow text-center">
+            <h2 class="text-xl font-bold">Total Complaints</h2>
+            <p class="text-2xl">{{ total_complaints }}</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow text-center">
+            <h2 class="text-xl font-bold">Resolution Rate</h2>
+            <p class="text-2xl">{{ resolution_rate }}%</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow text-center">
+            <h2 class="text-xl font-bold">Most Common Issues</h2>
+            <ul>
+                {% for issue in common_issues %}
+                    <li>{{ issue.category__name }}: {{ issue.count }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

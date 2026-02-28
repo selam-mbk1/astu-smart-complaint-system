@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto p-6">
+
+    <!-- Dashboard Title -->
+    <h1 class="text-3xl font-bold mb-6 text-blue-600">Admin Dashboard</h1>
+
+    <!-- Notifications -->
+    <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Notifications</h2>
+        <ul class="border rounded p-3 bg-gray-50">
+            {% for note in notifications %}
+                <li class="p-2 border-b">
+                    {{ note.message }}
+                    <span class="text-xs text-gray-500">{{ note.created_at|date:"M d, H:i" }}</span>
+                </li>
+            {% empty %}
+                <li>No notifications</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-white p-4 rounded shadow">
+            <h3 class="font-semibold">Total Complaints</h3>
+            <p class="text-2xl">{{ total_complaints }}</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+            <h3 class="font-semibold">Resolution Rate</h3>
+            <p class="text-2xl">{{ resolution_rate }}%</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+            <h3 class="font-semibold">Top Issues</h3>
+            <ul>
+                {% for issue in top_issues %}
+                    <li>{{ issue.category__name }} ({{ issue.count }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="bg-white p-4 rounded shadow mb-6">
+        <h3 class="font-semibold mb-2">Complaints by Category</h3>
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <!-- Recent Complaints Table -->
+    <div class="bg-white p-4 rounded shadow mb-6">
+        <h3 class="font-semibold mb-2">Recent Complaints</h3>
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr>
+                    <th class="border px-2 py-1">ID</th>
+                    <th class="border px-2 py-1">Student</th>
+                    <th class="border px-2 py-1">Title</th>
+                    <th class="border px-2 py-1">Category</th>
+                    <th class="border px-2 py-1">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comp in recent_complaints %}
+                <tr>
+                    <td class="border px-2 py-1">{{ comp.id }}</td>
+                    <td class="border px-2 py-1">{{ comp.user.username }}</td>
+                    <td class="border px-2 py-1">{{ comp.title }}</td>
+                    <td class="border px-2 py-1">{{ comp.category.name }}</td>
+                    <td class="border px-2 py-1">{{ comp.status|title }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center p-2">No complaints</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Manage Users & Categories -->
+    <div class="grid grid-cols-2 gap-4 mt-8">
+
+        <!-- Users Management -->
+        <div class="bg-white p-4 rounded shadow">
+            <h3 class="font-semibold mb-2 text-lg">Manage Users</h3>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="border px-2 py-1">ID</th>
+                        <th class="border px-2 py-1">Username</th>
+                        <th class="border px-2 py-1">Email</th>
+                        <th class="border px-2 py-1">Role</th>
+                        <th class="border px-2 py-1">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td class="border px-2 py-1">{{ user.id }}</td>
+                        <td class="border px-2 py-1">{{ user.username }}</td>
+                        <td class="border px-2 py-1">{{ user.email }}</td>
+                        <td class="border px-2 py-1">{{ user.role|title }}</td>
+                        <td class="border px-2 py-1">
+    <a href="{% url 'edit_user' user.id %}" class="text-blue-600">Edit</a> |
+
+    <form method="POST"
+            action="{% url 'delete_user' user.id %}"
+            style="display:inline;">
+        {% csrf_token %}
+        <button type="submit"
+            onclick="return confirm('Are you sure you want to delete {{ user.username }}?');"
+            class="text-red-600">
+            Delete
+        </button>
+    </form>
+</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center p-2">No users found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="mt-2">
+                <a href="{% url 'add_user' %}" class="bg-green-600 text-white px-3 py-1 rounded">Add User</a>
+
+                
+            </div>
+        </div>
+
+        <!-- Categories Management -->
+        <div class="bg-white p-4 rounded shadow">
+            <h3 class="font-semibold mb-2 text-lg">Manage Categories</h3>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="border px-2 py-1">ID</th>
+                        <th class="border px-2 py-1">Name</th>
+                        <th class="border px-2 py-1">Department</th>
+                        <th class="border px-2 py-1">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in categories %}
+                    <tr>
+                        <td class="border px-2 py-1">{{ cat.id }}</td>
+                        <td class="border px-2 py-1">{{ cat.name }}</td>
+                        <td class="border px-2 py-1">{{ cat.department.name }}</td>
+                        <td class="border px-2 py-1">
+                            <a href="{% url 'edit_category' cat.id %}" class="text-blue-600">Edit</a> |
+                            <a href="{% url 'delete_category' cat.id %}" class="text-red-600">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center p-2">No categories found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="mt-2">
+                <a href="{% url 'add_category' %}" class="bg-green-600 text-white px-3 py-1 rounded">Add Category</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    const categoryChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for issue in top_issues %}'{{ issue.category__name }}',{% endfor %}],
+            datasets: [{
+                label: 'Number of Complaints',
+                data: [{% for issue in top_issues %}{{ issue.count }},{% endfor %}],
+                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+{% endblock %}
