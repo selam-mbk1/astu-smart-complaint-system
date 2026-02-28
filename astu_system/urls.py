@@ -21,20 +21,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from complaints.views import ComplaintViewSet
-from dashboard.views import dashboard
-from chatbot.views import chatbot_page, chatbot_api
 
 router = DefaultRouter()
-router.register(r'complaints', ComplaintViewSet)
+router.register(r'complaints', ComplaintViewSet, basename='complaint')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('chatbot/', include('chatbot.urls')),
     path('', include('dashboard.urls')),
     path('accounts/', include('accounts.urls')),
     path('complaints/', include('complaints.urls')),
-    
+    path('chatbot/', include('chatbot.urls')),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'complaints',
     'chatbot',
     'dashboard',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -150,9 +151,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
- 
-LOGIN_URL = '/accounts/login/'  
+
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 SESSION_COOKIE_SECURE = False      # True only if using HTTPS
 CSRF_COOKIE_SECURE = False 

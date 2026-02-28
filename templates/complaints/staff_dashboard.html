@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mx-auto p-6">
+
+    <h1 class="text-3xl font-bold text-blue-600 mb-6">
+        Staff Dashboard - Department: {{ request.user.department }}
+    </h1>
+
+    <table class="w-full bg-white shadow rounded">
+        <thead class="bg-gray-200">
+            <tr class="text-center">
+                <th class="p-3">ID</th>
+                <th class="p-3">Student</th>
+                <th class="p-3">Title</th>
+                <th class="p-3">Category</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Remark</th>
+                <th class="p-3">Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+            <tr class="border-b text-center">
+                <td class="p-3">{{ complaint.id }}</td>
+                <td class="p-3">{{ complaint.user.username }}</td>
+                <td class="p-3">{{ complaint.title }}</td>
+                <td class="p-3">{{ complaint.category.name }}</td>
+                <td class="p-3">
+                    <form method="post" action="{% url 'update_status' complaint.id %}">
+                        {% csrf_token %}
+                        <select name="status" class="border p-1 rounded w-full">
+                            <option value="open" {% if complaint.status == 'open' %}selected{% endif %}>Open</option>
+                            <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                            <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                </td>
+                <td class="p-3">
+                        <input type="text" name="remark" value="{{ complaint.remark }}" placeholder="Add remark"
+                               class="border px-2 py-1 rounded w-full">
+                </td>
+                <td class="p-3">
+                        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded w-full mt-1">
+                            Update
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="p-4 text-gray-500 text-center">
+                    No complaints assigned to your department.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

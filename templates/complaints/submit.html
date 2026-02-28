@@ -1,12 +1,124 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
+<div class="flex flex-col md:flex-row gap-6 p-6">
 
-<h2>Submit Complaint</h2>
+    <!-- Complaint Form -->
+    <div class="flex-1 bg-white shadow-lg rounded-lg p-6">
+        <h1 class="text-3xl font-bold text-green-600 mb-6">Submit Campus Complaint</h1>
 
-<form method="post" enctype="multipart/form-data" class="bg-white p-4 shadow">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="bg-blue-500 text-white px-4 py-2">Submit</button>
-</form>
+        {% if messages %}
+            <ul class="mb-4">
+                {% for message in messages %}
+                    <li class="text-red-500 mb-2">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div>
+                {{ form.title.label_tag }}
+                {{ form.title|add_class:"w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400" }}
+            </div>
+
+            <!-- Description -->
+            <div>
+                {{ form.description.label_tag }}
+                {{ form.description|add_class:"w-full border rounded px-3 py-2 h-32 focus:ring-2 focus:ring-green-400" }}
+            </div>
+
+            <!-- Category -->
+            <div>
+                {{ form.category.label_tag }}
+                {{ form.category|add_class:"w-full border rounded px-3 py-2 bg-white focus:ring-2 focus:ring-green-400" }}
+            </div>
+
+            <!-- Dynamic Extra Fields -->
+            <div id="extra-fields" class="space-y-4 hidden">
+
+                <div id="dormitory-field" class="hidden">
+                    <label class="block font-medium mb-1">Block / Dorm Number</label>
+                    <input type="text" name="dorm_block"
+                           class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400">
+                </div>
+
+                <div id="internet-field" class="hidden">
+                    <label class="block font-medium mb-1">Building Name</label>
+                    <input type="text" name="building_name"
+                           class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400">
+                </div>
+
+                <div id="academic-field" class="hidden">
+                    <label class="block font-medium mb-1">Course Code</label>
+                    <input type="text" name="course_code"
+                           class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400">
+                </div>
+
+            </div>
+
+            <!-- Priority -->
+            <div>
+                {{ form.priority.label_tag }}
+                {{ form.priority|add_class:"w-full border rounded px-3 py-2 bg-white focus:ring-2 focus:ring-green-400" }}
+            </div>
+
+            <!-- Attachment -->
+            <div>
+                {{ form.attachment.label_tag }}
+                {{ form.attachment|add_class:"w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400" }}
+            </div>
+
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded mt-4 w-full">
+                Submit Complaint
+            </button>
+        </form>
+    </div>
+
+    <!-- AI Assistant Sidebar -->
+    <div class="w-full md:w-1/3 bg-indigo-50 p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold mb-4 text-indigo-700">AI Assistant</h2>
+        <p class="mb-4 text-gray-700">
+            Ask questions or get guidance about submitting complaints.
+        </p>
+        <a href="{% url 'chatbot_page' %}"
+           class="block bg-indigo-500 hover:bg-indigo-600 text-white text-center font-semibold py-2 rounded transition duration-200">
+            Chat with AI
+        </a>
+    </div>
+
+</div>
+
+<!-- JavaScript for Dynamic Category -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const categorySelect = document.getElementById("id_category");
+    const extraFields = document.getElementById("extra-fields");
+
+    const dormField = document.getElementById("dormitory-field");
+    const internetField = document.getElementById("internet-field");
+    const academicField = document.getElementById("academic-field");
+
+    function hideAll() {
+        dormField.classList.add("hidden");
+        internetField.classList.add("hidden");
+        academicField.classList.add("hidden");
+    }
+
+    categorySelect.addEventListener("change", function () {
+        const selectedText = categorySelect.options[categorySelect.selectedIndex].text;
+        hideAll();
+
+        if (selectedText === "Dormitory Issue") dormField.classList.remove("hidden");
+        else if (selectedText === "Internet Issue") internetField.classList.remove("hidden");
+        else if (selectedText === "Academic Issue") academicField.classList.remove("hidden");
+
+        extraFields.classList.toggle("hidden", selectedText === "");
+    });
+});
+</script>
 {% endblock %}

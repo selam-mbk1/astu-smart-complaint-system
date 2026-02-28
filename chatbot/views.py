@@ -10,13 +10,15 @@ def chatbot_page(request):
 def chatbot_api(request):
     if request.method == 'POST':
         user_message = request.POST.get('message', '').lower()
-        with open('chatbot/data.json') as f:
+
+        with open('chatbot/responses.json') as f:
             data = json.load(f)
 
         response = "Sorry, I don't understand."
-        for item in data:
-            if user_message in item['question'].lower():
-                response = item['answer']
+
+        for key, value in data.items():
+            if key in user_message:
+                response = value
                 break
 
         return JsonResponse({'response': response})

@@ -1,13 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2 class="text-xl mb-4">Login</h2>
+<div class="max-w-md mx-auto mt-16 bg-white p-8 shadow-xl rounded-xl">
 
-<form method="post" class="bg-white p-4 shadow rounded">
-    {% csrf_token %}
-    <input name="username" placeholder="Username" class="border p-2 w-full mb-2">
-    <input name="password" type="password" placeholder="Password" class="border p-2 w-full mb-2">
-    <button class="bg-blue-500 text-white px-4 py-2">Login</button>
-</form>
+    <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+
+    {% for message in messages %}
+        <div class="text-red-500 text-sm mb-3">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <input type="text" name="username" placeholder="Username"
+               class="border p-2 w-full mb-4 rounded">
+
+        <input type="password" name="password" placeholder="Password"
+               class="border p-2 w-full mb-4 rounded">
+
+        <!-- Role selection -->
+        <label class="block mb-2 font-medium">Select Role</label>
+        <select name="role" class="border p-2 w-full mb-6 rounded">
+            <option value="">-- Choose Role --</option>
+            <option value="student">Student</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+        </select>
+
+        <button class="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
+            Login
+        </button>
+    </form>
+
+    <p class="text-center mt-4 text-sm">
+        Don’t have an account?
+        <a href="{% url 'register' %}" class="text-blue-600 hover:underline">
+            Register
+        </a>
+    </p>
+
+</div>
 
 {% endblock %}
