@@ -1,23 +1,88 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>My Complaints</h2>
+<div class="max-w-6xl mx-auto py-12 px-6">
+    
+    <div class="flex flex-col md:flex-row justify-between items-center border-b-4 border-slate-900 pb-6 mb-8 gap-4">
+        <div>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight uppercase">My Complaints</h1>
+            <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">Official Submission Records</p>
+        </div>
+        <a href="/complaints/submit/" class="bg-indigo-700 hover:bg-black text-white px-8 py-3 rounded-none font-black text-xs uppercase tracking-widest transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none">
+            + New Report
+        </a>
+    </div>
 
-<table class="table-auto w-full bg-white">
-<tr>
-    <th>Title</th>
-    <th>Status</th>
-    <th>Date</th>
-</tr>
+    <div class="bg-white border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,0.1)] overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-900">
+                    <th class="px-6 py-4 text-[11px] font-black text-white uppercase tracking-widest border-r border-slate-700">Ref ID</th>
+                    <th class="px-6 py-4 text-[11px] font-black text-white uppercase tracking-widest border-r border-slate-700">Subject / Title</th>
+                    <th class="px-6 py-4 text-[11px] font-black text-white uppercase tracking-widest border-r border-slate-700 text-center">Status</th>
+                    <th class="px-6 py-4 text-[11px] font-black text-white uppercase tracking-widest text-right">Date Filed</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y-2 divide-slate-100">
+                {% for c in complaints %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-5 border-r border-slate-100">
+                        <span class="font-mono font-black text-slate-400 text-sm">#{{ c.id|add:"1000" }}</span>
+                    </td>
 
-{% for c in complaints %}
-<tr>
-    <td>{{ c.title }}</td>
-    <td>{{ c.status }}</td>
-    <td>{{ c.created_at }}</td>
-</tr>
-{% endfor %}
+                    <td class="px-6 py-5 border-r border-slate-100">
+                        <p class="text-base font-black text-slate-900">{{ c.title }}</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase mt-0.5">ASTU Student Submission</p>
+                    </td>
 
-</table>
+                    <td class="px-6 py-5 border-r border-slate-100 text-center">
+                        {% if c.status == "resolved" %}
+                            <span class="inline-block bg-emerald-600 text-white text-[10px] font-black px-3 py-1 rounded-sm uppercase tracking-tighter">
+                                Resolved
+                            </span>
+                        {% elif c.status == "in_progress" %}
+                            <span class="inline-block bg-amber-500 text-black text-[10px] font-black px-3 py-1 rounded-sm uppercase tracking-tighter">
+                                In Progress
+                            </span>
+                        {% else %}
+                            <span class="inline-block bg-slate-200 text-slate-700 text-[10px] font-black px-3 py-1 rounded-sm uppercase tracking-tighter border border-slate-300">
+                                Pending
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td class="px-6 py-5 text-right">
+                        <span class="text-sm font-bold text-slate-900 block">{{ c.created_at|date:"M d, Y" }}</span>
+                        <span class="text-[10px] font-black text-slate-400 uppercase">{{ c.created_at|time:"H:i" }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="py-20 text-center">
+                        <p class="text-slate-300 font-black text-xl uppercase tracking-widest">No Records Found</p>
+                        <p class="text-slate-400 text-xs font-bold mt-2">Submit a new complaint to start tracking.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-8 flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+        <span>ASTU Management System v3.0</span>
+        <div class="flex gap-4">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span> Finalized</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 bg-amber-500 rounded-full"></span> Action Required</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Force text thickness and deep colors */
+    body {
+        -webkit-font-smoothing: antialiased;
+        color: #0f172a;
+    }
+</style>
 
 {% endblock %}

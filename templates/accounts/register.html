@@ -1,25 +1,124 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="max-w-md mx-auto mt-16 bg-white p-8 shadow-xl rounded-xl">
+<div class="min-h-[90vh] flex flex-col justify-center items-center px-4 py-12">
+    <div class="relative w-full max-w-lg">
+        
+        <div class="absolute -top-10 -right-10 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-2xl opacity-60 animate-blob"></div>
+        <div class="absolute -bottom-10 -left-10 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-60 animate-blob animation-delay-2000"></div>
 
-    <h2 class="text-2xl font-bold text-center mb-6">Create Account</h2>
+        <div class="relative bg-white/90 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2.5rem] border border-white/40 p-10 md:p-12">
+            
+            <div class="text-center mb-10">
+                <div class="inline-flex p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg mb-4">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Join the Academy</h2>
+                <p class="text-slate-500 mt-2 font-medium">Create your student credentials to get started.</p>
+            </div>
 
-    {% for message in messages %}
-        <div class="text-red-500 text-sm mb-3">
-            {{ message }}
+            {% if messages %}
+                <div class="space-y-3 mb-8">
+                {% for message in messages %}
+                    <div class="flex items-center p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-xl text-sm animate-in fade-in slide-in-from-top-2">
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-2 custom-django-form">
+                {% csrf_token %}
+                
+                <div class="text-slate-700">
+                    {{ form.as_p }}
+                </div>
+
+                <button type="submit" 
+                        class="group relative w-full py-4 bg-slate-900 text-white font-bold rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-xl mt-6">
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="relative flex items-center justify-center gap-2">
+                        Complete Registration
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    </span>
+                </button>
+            </form>
+
+            <div class="mt-10 text-center">
+                <p class="text-slate-500 text-sm">
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="text-emerald-600 font-extrabold hover:text-blue-600 transition-colors underline underline-offset-4">
+                        Sign in instead
+                    </a>
+                </p>
+            </div>
         </div>
-    {% endfor %}
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-
-        <button class="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700 mt-4">
-            Register
-        </button>
-    </form>
-
+    </div>
 </div>
+
+<style>
+    /* Styling the raw Django {{ form.as_p }} outputs */
+    .custom-django-form p {
+        margin-bottom: 1.25rem;
+    }
+    .custom-django-form label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #94a3b8; /* slate-400 */
+        margin-bottom: 0.5rem;
+        margin-left: 0.25rem;
+    }
+    .custom-django-form input, 
+    .custom-django-form select, 
+    .custom-django-form textarea {
+        width: 100%;
+        padding: 0.85rem 1.25rem;
+        background-color: #f8fafc; /* slate-50 */
+        border: 2px solid transparent;
+        border-radius: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+        color: #334155;
+    }
+    .custom-django-form input:focus {
+        border-color: #10b981; /* emerald-500 */
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+    .custom-django-form .helptext {
+        display: block;
+        font-size: 0.7rem;
+        color: #94a3b8;
+        margin-top: 0.25rem;
+        margin-left: 0.25rem;
+    }
+    .custom-django-form .errorlist {
+        color: #ef4444;
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+        list-style: none;
+        padding-left: 0;
+    }
+
+    /* Animation Blobs */
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+</style>
 
 {% endblock %}

@@ -1,12 +1,49 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>AI Student Assistant</h2>
+<div class="min-h-[90vh] bg-slate-50 flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white shadow-2xl rounded-[2rem] border border-slate-200 overflow-hidden flex flex-col h-[700px]">
+        
+        <div class="bg-indigo-900 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-400/20">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-xl font-black text-white leading-tight">University AI</h2>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    <span class="text-indigo-200 text-xs font-bold uppercase tracking-widest">Always Online</span>
+                </div>
+            </div>
+        </div>
 
-<div id="chatbox" class="bg-white p-4 h-64 overflow-y-scroll border rounded mb-3"></div>
+        <div id="chatbox" class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 scroll-smooth">
+            <div class="flex justify-start">
+                <div class="max-w-[80%] bg-white border border-slate-200 p-4 rounded-2xl rounded-tl-none shadow-sm">
+                    <p class="text-slate-800 font-medium">Hello! I'm your AI campus assistant. How can I help you with your complaints or university life today?</p>
+                </div>
+            </div>
+        </div>
 
-<input id="msg" class="border p-2 w-full mb-2" placeholder="Type your question...">
-<button onclick="sendMsg()" class="bg-blue-500 text-white px-4 py-2 rounded">Send</button>
+        <div class="p-6 bg-white border-t border-slate-100">
+            <div class="relative flex items-center gap-2">
+                <input id="msg" type="text" 
+                       class="w-full pl-5 pr-14 py-4 bg-slate-50 border-2 border-slate-200 focus:border-indigo-500 rounded-2xl outline-none text-slate-900 font-medium transition-all" 
+                       placeholder="Ask about dormitory, internet, or courses...">
+                
+                <button onclick="sendMsg()" 
+                        class="absolute right-2 p-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all shadow-lg active:scale-90">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9-2-9-18-9 18 9 2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
+            <p class="text-center text-[10px] text-slate-400 mt-3 font-bold uppercase tracking-widest">Secured Campus AI Assistant</p>
+        </div>
+    </div>
+</div>
 
 <script>
 function sendMsg(){
@@ -15,13 +52,29 @@ function sendMsg(){
     let userMsg = msgBox.value.trim();
     if(!userMsg) return;
 
-    // Show user message
-    chatbox.innerHTML += "<p><strong>You:</strong> " + userMsg + "</p>";
+    // Show User Message Bubble (Right Side)
+    chatbox.innerHTML += `
+        <div class="flex justify-end animate-in slide-in-from-right-2">
+            <div class="max-w-[80%] bg-indigo-600 p-4 rounded-2xl rounded-tr-none shadow-md">
+                <p class="text-white font-medium">${userMsg}</p>
+            </div>
+        </div>
+    `;
+    
     chatbox.scrollTop = chatbox.scrollHeight;
     msgBox.value = "";
 
     // Show typing indicator
-    chatbox.innerHTML += "<p id='typing'><em>Assistant is typing...</em></p>";
+    let typingId = "typing-" + Date.now();
+    chatbox.innerHTML += `
+        <div id="${typingId}" class="flex justify-start animate-pulse">
+            <div class="bg-white border border-slate-200 p-4 rounded-2xl rounded-tl-none flex items-center gap-1">
+                <div class="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                <div class="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                <div class="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+            </div>
+        </div>
+    `;
     chatbox.scrollTop = chatbox.scrollHeight;
 
     fetch('/chatbot/api/', {
@@ -35,15 +88,29 @@ function sendMsg(){
     .then(res=>res.json())
     .then(data=>{
         // Remove typing
-        document.getElementById('typing').remove();
+        document.getElementById(typingId).remove();
 
-        // Format line breaks for bullets
+        // Format line breaks
         let formatted = data.response.replace(/\n/g, "<br>");
 
-        chatbox.innerHTML += "<p><strong>Assistant:</strong> " + formatted + "</p>";
+        // Show Assistant Message Bubble (Left Side)
+        chatbox.innerHTML += `
+            <div class="flex justify-start animate-in slide-in-from-left-2">
+                <div class="max-w-[80%] bg-white border border-slate-200 p-4 rounded-2xl rounded-tl-none shadow-sm">
+                    <p class="text-slate-800 font-medium">${formatted}</p>
+                </div>
+            </div>
+        `;
         chatbox.scrollTop = chatbox.scrollHeight;
-    })
+    });
 }
+
+// Allow "Enter" key to send
+document.getElementById("msg").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        sendMsg();
+    }
+});
 </script>
 
 {% endblock %}

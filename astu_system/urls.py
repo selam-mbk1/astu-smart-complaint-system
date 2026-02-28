@@ -19,8 +19,11 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.shortcuts import redirect
 from complaints.views import ComplaintViewSet
+
+def home_redirect(request):
+    return redirect('login')
 
 router = DefaultRouter()
 router.register(r'complaints', ComplaintViewSet, basename='complaint')
@@ -28,7 +31,8 @@ router.register(r'complaints', ComplaintViewSet, basename='complaint')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('', include('dashboard.urls')),
+    path('', home_redirect, name='home'),
+    path('dashboard/', include('dashboard.urls')),
     path('accounts/', include('accounts.urls')),
     path('complaints/', include('complaints.urls')),
     path('chatbot/', include('chatbot.urls')),

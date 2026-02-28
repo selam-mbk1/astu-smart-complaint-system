@@ -1,23 +1,78 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
-
-<h2 class="text-2xl font-bold mb-4">{{ title }}</h2>
-
-<form method="POST">
-    {% csrf_token %}
-    {% for field in form %}
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}
-                <p class="text-red-500 text-sm">{{ field.errors }}</p>
-            {% endif %}
+<div class="min-h-[90vh] bg-[#F8FAFC] flex flex-col items-center py-12 px-6">
+    
+    <div class="w-full max-w-3xl mb-8 flex justify-between items-end">
+        <div>
+            <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                <a href="{% url 'faq_list' %}" class="hover:text-blue-600 transition-colors">Knowledge Base</a>
+                <span>/</span>
+                <span class="text-slate-900">Editor</span>
+            </nav>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">{{ title }}</h1>
         </div>
-    {% endfor %}
-    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
-        Save
-    </button>
-    <a href="{% url 'faq_list' %}" class="ml-2 bg-gray-500 text-white px-4 py-2 rounded">Cancel</a>
-</form>
+        <div class="h-12 w-12 bg-white border border-slate-200 rounded-2xl flex items-center justify-center shadow-sm">
+            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+        </div>
+    </div>
 
+    <div class="w-full max-w-3xl bg-white border border-slate-200 rounded-[2.5rem] shadow-xl shadow-slate-200/60 overflow-hidden">
+        <form method="POST" class="p-10 space-y-8">
+            {% csrf_token %}
+
+            <div class="space-y-6">
+                {% for field in form %}
+                    <div class="flex flex-col">
+                        <label class="text-xs font-black text-slate-500 uppercase tracking-[0.15em] mb-3 ml-1 flex items-center justify-between">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                                <span class="text-[9px] bg-slate-100 text-slate-400 px-2 py-0.5 rounded">REQUIRED</span>
+                            {% endif %}
+                        </label>
+                        
+                        <div class="group relative">
+                            {% render_field field class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 focus:border-blue-600 focus:bg-white rounded-2xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300" %}
+                            
+                            {% if field.errors %}
+                                <div class="mt-2 flex items-center gap-1.5 text-red-600">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                                    <p class="text-[10px] font-black uppercase tracking-tight">{{ field.errors.0 }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if field.help_text %}
+                            <p class="text-[10px] text-slate-400 font-bold mt-2 ml-1 leading-relaxed">{{ field.help_text }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pt-8 border-t border-slate-50 flex items-center gap-4">
+                <button type="submit" class="flex-1 bg-slate-900 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-slate-200 transition-all transform active:scale-95 uppercase tracking-widest text-xs">
+                    Confirm & Publish
+                </button>
+                <a href="{% url 'faq_list' %}" class="px-8 py-4 bg-white border-2 border-slate-100 text-slate-400 font-black rounded-2xl hover:bg-slate-50 hover:text-slate-600 transition-all uppercase tracking-widest text-xs">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <p class="mt-8 text-[10px] text-slate-300 font-black uppercase tracking-[0.3em]">Institutional Knowledge Management System</p>
+</div>
+
+<style>
+    /* Styling for Textarea specific to FAQ content */
+    textarea {
+        min-height: 180px;
+        line-height: 1.6;
+        resize: vertical;
+    }
+    input::placeholder { font-weight: 500; }
+</style>
 {% endblock %}

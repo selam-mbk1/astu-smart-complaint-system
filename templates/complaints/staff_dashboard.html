@@ -1,114 +1,143 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mx-auto p-6">
-
-    <h1 class="text-3xl font-bold text-blue-600 mb-6">
-        Staff Dashboard - Department: {{ request.user.department }}
-    </h1>
-
-    <div class="mb-4">
-    <h2 class="text-xl font-semibold mb-2">Notifications</h2>
-    <ul class="border rounded p-3 bg-gray-50">
-        {% for note in notifications %}
-            <li class="p-2 border-b {% if not note.read %}bg-blue-50{% endif %}">
-                {{ note.message }}
-                <span class="text-xs text-gray-500">{{ note.created_at|date:"M d, H:i" }}</span>
-            </li>
-        {% empty %}
-            <li>No notifications</li>
-        {% endfor %}
-    </ul>
+<div class="min-h-screen bg-slate-50 pb-12">
+    <div class="bg-white border-b border-slate-200 mb-8">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="text-xs font-black text-blue-600 uppercase tracking-[0.2em]">Administrative Portal</span>
+                    <h1 class="text-3xl font-black text-slate-900 mt-1">
+                        Staff Dashboard <span class="text-slate-400 font-light">|</span> 
+                        <span class="text-blue-700">{{ request.user.department }}</span>
+                    </h1>
+                </div>
+                <div class="bg-blue-50 px-4 py-2 rounded-2xl border border-blue-100">
+                    <p class="text-sm font-bold text-blue-800">Department Overview</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <table class="w-full bg-white shadow rounded text-sm">
-    <thead class="bg-gray-200">
-        <tr class="text-center">
-            <th class="p-3">ID</th>
-            <th class="p-3">Student</th>
-            <th class="p-3">Title</th>
-            <th class="p-3">Category</th>
-            <th class="p-3">Location Info</th>
-            <th class="p-3">Attachment</th>
-            <th class="p-3">Status</th>
-            <th class="p-3">Remark</th>
-            <th class="p-3">Update</th>
-        </tr>
-    </thead>
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-50 flex items-center justify-between">
+                        <h2 class="font-black text-slate-800 tracking-tight">Notifications</h2>
+                        <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">{{ notifications|length }}</span>
+                    </div>
+                    <div class="p-4 max-h-[500px] overflow-y-auto space-y-3">
+                        {% for note in notifications %}
+                            <div class="p-4 rounded-2xl border transition-all {% if not note.read %}bg-blue-50/50 border-blue-100 shadow-sm{% else %}bg-white border-slate-100 opacity-70{% endif %}">
+                                <p class="text-sm font-semibold text-slate-700 leading-snug">{{ note.message }}</p>
+                                <span class="text-[10px] font-bold text-slate-400 mt-2 block uppercase tracking-wider">{{ note.created_at|date:"M d, H:i" }}</span>
+                            </div>
+                        {% empty %}
+                            <div class="text-center py-10">
+                                <p class="text-slate-400 text-sm font-bold italic">No new alerts</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
-    <tbody>
-        {% for complaint in complaints %}
-        <tr class="border-b text-center hover:bg-gray-50">
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-50">
+                        <h2 class="font-black text-slate-800 tracking-tight">Active Requests</h2>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-slate-50/50 border-b border-slate-100">
+                                    <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Student & ID</th>
+                                    <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Title & Category</th>
+                                    <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Location Info</th>
+                                    <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Doc</th>
+                                    <th class="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Update Management</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                {% for complaint in complaints %}
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-6 py-5">
+                                        <div class="flex flex-col">
+                                            <span class="text-slate-900 font-black">#{{ complaint.id }}</span>
+                                            <span class="text-xs font-bold text-slate-500 uppercase tracking-tighter">{{ complaint.user.username }}</span>
+                                        </div>
+                                    </td>
 
-            <td class="p-3">{{ complaint.id }}</td>
-            <td class="p-3">{{ complaint.user.username }}</td>
-            <td class="p-3">{{ complaint.title }}</td>
-            <td class="p-3">{{ complaint.category.name }}</td>
+                                    <td class="px-6 py-5">
+                                        <div class="flex flex-col">
+                                            <span class="text-slate-800 font-bold leading-tight">{{ complaint.title }}</span>
+                                            <span class="text-[10px] font-black text-blue-600 mt-1 uppercase">{{ complaint.category.name }}</span>
+                                        </div>
+                                    </td>
 
-            <!-- Combined Location Column -->
-            <td class="p-3">
-                {% if complaint.dorm_block %}
-                    {{ complaint.dorm_block }}
-                {% elif complaint.building_name %}
-                    {{ complaint.building_name }}
-                {% elif complaint.course_code %}
-                    {{ complaint.course_code }}
-                {% else %}
-                    -
-                {% endif %}
-            </td>
+                                    <td class="px-6 py-5">
+                                        <span class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                                            {% if complaint.dorm_block %}{{ complaint.dorm_block }}
+                                            {% elif complaint.building_name %}{{ complaint.building_name }}
+                                            {% elif complaint.course_code %}{{ complaint.course_code }}
+                                            {% else %} - {% endif %}
+                                        </span>
+                                    </td>
 
-            <!-- Attachment -->
-            <td class="p-3">
-                {% if complaint.attachment %}
-                    <a href="{{ complaint.attachment.url }}"
-                       target="_blank"
-                       class="text-blue-500 underline">
-                       View
-                    </a>
-                {% else %}
-                    <span class="text-gray-400">None</span>
-                {% endif %}
-            </td>
+                                    <td class="px-6 py-5">
+                                        {% if complaint.attachment %}
+                                            <a href="{{ complaint.attachment.url }}" target="_blank" 
+                                               class="inline-flex p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                            </a>
+                                        {% else %}
+                                            <span class="text-slate-300">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                            </span>
+                                        {% endif %}
+                                    </td>
 
-            <!-- Status + Remark Form -->
-            <td class="p-3">
-                <form method="post" action="{% url 'update_status' complaint.id %}">
-                    {% csrf_token %}
-                    <select name="status" class="border p-1 rounded w-full text-sm">
-                        <option value="open" {% if complaint.status == 'open' %}selected{% endif %}>Open</option>
-                        <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-                        <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
-                    </select>
-            </td>
+                                    <td class="px-6 py-5">
+                                        <form method="post" action="{% url 'update_status' complaint.id %}" class="flex flex-col sm:flex-row gap-2">
+                                            {% csrf_token %}
+                                            <div class="relative min-w-[120px]">
+                                                <select name="status" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs font-black rounded-xl p-2.5 focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
+                                                    <option value="open" {% if complaint.status == 'open' %}selected{% endif %}>Open</option>
+                                                    <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                                    <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                                                </select>
+                                                <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                                                </div>
+                                            </div>
+                                            <input type="text" name="remark" value="{{ complaint.remark }}" placeholder="Remark"
+                                                   class="w-full bg-slate-50 border border-slate-200 text-xs font-semibold rounded-xl p-2.5 focus:border-blue-500 outline-none">
+                                            <button type="submit" class="bg-slate-900 hover:bg-blue-700 text-white text-[10px] font-black uppercase px-4 py-2.5 rounded-xl transition-all active:scale-95 shadow-lg shadow-slate-200">
+                                                Save
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="py-20 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <p class="text-slate-400 font-black text-xl">Queue Empty</p>
+                                            <p class="text-slate-400 text-xs mt-1 font-bold uppercase tracking-widest">No complaints pending for your department</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-            <td class="p-3">
-                    <input type="text" name="remark"
-                           value="{{ complaint.remark }}"
-                           placeholder="Add remark"
-                           class="border px-2 py-1 rounded w-full text-sm">
-            </td>
-
-            <td class="p-3">
-                    <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded w-full text-sm">
-                        Update
-                    </button>
-                </form>
-            </td>
-
-        </tr>
-
-        {% empty %}
-        <tr>
-            <td colspan="9" class="p-4 text-gray-500 text-center">
-                No complaints assigned to your department.
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+        </div>
+    </div>
 </div>
 
 {% endblock %}

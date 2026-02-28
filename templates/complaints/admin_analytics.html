@@ -1,26 +1,75 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold text-blue-600 mb-6">Admin Analytics Dashboard</h1>
+<div class="min-h-screen bg-[#F8FAFC] antialiased pb-12">
+    
+    <div class="bg-white border-b border-slate-200 mb-8">
+        <div class="container mx-auto px-6 py-10">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black text-slate-900 tracking-tight">System <span class="text-blue-700">Analytics</span></h1>
+                    <p class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Global Performance Overview</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="bg-white p-4 rounded shadow text-center">
-            <h2 class="text-xl font-bold">Total Complaints</h2>
-            <p class="text-2xl">{{ total_complaints }}</p>
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                    <svg class="w-20 h-20 text-slate-900" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path></svg>
+                </div>
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Total Reports</h2>
+                <p class="text-6xl font-black text-slate-900 tracking-tighter">{{ total_complaints }}</p>
+                <div class="mt-4 px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase">Lifetime Volume</div>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                    <svg class="w-20 h-20 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                </div>
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Resolution Rate</h2>
+                <p class="text-6xl font-black text-emerald-600 tracking-tighter">{{ resolution_rate }}%</p>
+                <div class="mt-4 px-3 py-1 bg-emerald-50 rounded-full text-[10px] font-black text-emerald-600 uppercase">System Efficiency</div>
+            </div>
+
+            <div class="bg-slate-900 p-8 rounded-[2rem] shadow-2xl shadow-blue-900/20 relative overflow-hidden">
+                <h2 class="text-xs font-black text-blue-400 uppercase tracking-widest mb-6">Most Common Issues</h2>
+                <ul class="space-y-4">
+                    {% for issue in common_issues %}
+                        <li class="flex justify-between items-center group">
+                            <span class="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">{{ issue.category__name }}</span>
+                            <div class="flex items-center gap-3">
+                                <div class="h-1.5 w-16 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500" style="width: {{ issue.count }}%;"></div>
+                                </div>
+                                <span class="text-xs font-black text-blue-400">{{ issue.count }}</span>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="text-slate-500 italic text-sm font-bold">No issues recorded yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
         </div>
-        <div class="bg-white p-4 rounded shadow text-center">
-            <h2 class="text-xl font-bold">Resolution Rate</h2>
-            <p class="text-2xl">{{ resolution_rate }}%</p>
-        </div>
-        <div class="bg-white p-4 rounded shadow text-center">
-            <h2 class="text-xl font-bold">Most Common Issues</h2>
-            <ul>
-                {% for issue in common_issues %}
-                    <li>{{ issue.category__name }}: {{ issue.count }}</li>
-                {% endfor %}
-            </ul>
+
+        <div class="mt-12 p-8 bg-white border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center opacity-60">
+            <svg class="w-12 h-12 text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <p class="text-slate-400 font-black text-xs uppercase tracking-widest">Extended Data Visualizations Loading...</p>
         </div>
     </div>
 </div>
+
+<style>
+    /* Ultra-professional text rendering */
+    body { font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.01em; }
+</style>
 {% endblock %}
