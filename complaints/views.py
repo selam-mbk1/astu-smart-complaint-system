@@ -60,6 +60,22 @@ def submit_complaint(request):
         complaint = form.save(commit=False)
         complaint.user = request.user
         complaint.status = "open"
+        
+        category_name = complaint.category.name.lower()
+
+        if "dormitory" in category_name and not complaint.dorm_block:
+            messages.error(request, "Please select dorm block for Dormitory Issue")
+            return redirect("submit_complaint")
+
+        elif "academic" in category_name and not complaint.course_code:
+            messages.error(request, "Please enter course code for Academic Issue.")
+            return redirect("submit_complaint")
+
+        elif "internet" in category_name and not complaint.building_name:
+            messages.error(request, "Please enter building name for Internet Issue.")
+            return redirect("submit_complaint")
+
+        
         complaint.save()
         
         staff_members = User.objects.filter(

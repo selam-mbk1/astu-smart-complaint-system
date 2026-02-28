@@ -45,6 +45,10 @@ class Complaint(models.Model):
         choices=PRIORITY_CHOICES,
         default='medium'
     )
+    
+    dorm_block = models.CharField(max_length=50, blank=True, null=True)
+    building_name = models.CharField(max_length=100, blank=True, null=True)
+    course_code = models.CharField(max_length=50, blank=True, null=True)
 
     attachment = models.ImageField(upload_to='complaints/', blank=True, null=True)
 

@@ -48,53 +48,86 @@
 
     <!-- Recent Complaints Table -->
     <div class="bg-white p-4 rounded shadow mb-6">
-        <h3 class="font-semibold mb-2">Recent Complaints</h3>
-        <table class="w-full text-left border-collapse">
-            <thead>
+    <h3 class="font-semibold mb-4 text-lg">Recent Complaints</h3>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-center border rounded">
+            <thead class="bg-gray-100">
                 <tr>
-                    <th class="border px-2 py-1">ID</th>
-                    <th class="border px-2 py-1">Student</th>
-                    <th class="border px-2 py-1">Title</th>
-                    <th class="border px-2 py-1">Category</th>
-                    
-                    <th class="border px-2 py-1">Status</th>
-                    <th class="border px-2 py-1">Attachment</th> 
+                    <th class="p-3">ID</th>
+                    <th class="p-3">Student</th>
+                    <th class="p-3">Title</th>
+                    <th class="p-3">Category</th>
+                    <th class="p-3">Location Info</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Attachment</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for comp in recent_complaints %}
-                <tr>
-                    <td class="border px-2 py-1">{{ comp.id }}</td>
-                    <td class="border px-2 py-1">{{ comp.user.username }}</td>
-                    <td class="border px-2 py-1">{{ comp.title }}</td>
-                    <td class="border px-2 py-1">{{ comp.category.name }}</td>
-                    <td class="border px-2 py-1">{{ comp.status|title }}</td>
-                    <!--  ATTACHMENT COLUMN -->
-                    <td class="border px-2 py-1 text-center">
-                        {% if comp.attachment %}
-                            <a href="{{ comp.attachment.url }}" 
-                               target="_blank" 
-                               class="text-blue-600 underline block mb-1">
-                                View
-                            </a>
+                <tr class="border-b hover:bg-gray-50">
 
-                            <img src="{{ comp.attachment.url }}" 
-                                class="w-16 mx-auto rounded border">
+                    <td class="p-3">{{ comp.id }}</td>
+                    <td class="p-3">{{ comp.user.username }}</td>
+                    <td class="p-3">{{ comp.title }}</td>
+                    <td class="p-3">{{ comp.category.name }}</td>
+
+                    <!-- Combined Location Column -->
+                    <td class="p-3">
+                        {% if comp.dorm_block %}
+                            {{ comp.dorm_block }}
+                        {% elif comp.building_name %}
+                            {{ comp.building_name }}
+                        {% elif comp.course_code %}
+                            {{ comp.course_code }}
                         {% else %}
-                            <span class="text-gray-400">No File</span>
+                            -
                         {% endif %}
                     </td>
 
-                  
+                    <!-- Status Badge -->
+                    <td class="p-3">
+                        {% if comp.status == "resolved" %}
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
+                                Resolved
+                            </span>
+                        {% elif comp.status == "in_progress" %}
+                            <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">
+                                In Progress
+                            </span>
+                        {% else %}
+                            <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">
+                                Open
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Attachment -->
+                    <td class="p-3">
+                        {% if comp.attachment %}
+                            <a href="{{ comp.attachment.url }}"
+                               target="_blank"
+                               class="text-blue-600 underline">
+                               View
+                            </a>
+                        {% else %}
+                            <span class="text-gray-400">None</span>
+                        {% endif %}
+                    </td>
+
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center p-2">No complaints</td>
+                    <td colspan="7" class="text-center p-4 text-gray-500">
+                        No complaints
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+</div>
 
     <!-- Manage Users & Categories -->
     <div class="grid grid-cols-2 gap-4 mt-8">

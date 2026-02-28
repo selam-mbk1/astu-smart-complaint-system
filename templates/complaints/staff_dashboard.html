@@ -21,71 +21,93 @@
     </ul>
     </div>
 
-    <table class="w-full bg-white shadow rounded">
-        <thead class="bg-gray-200">
-            <tr class="text-center">
-                <th class="p-3">ID</th>
-                <th class="p-3">Student</th>
-                <th class="p-3">Title</th>
-                <th class="p-3">Category</th>
-                <th class="p-3">Attachment</th>
-                <th class="p-3">Status</th>
-                <th class="p-3">Remark</th>
-                <th class="p-3">Update</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for complaint in complaints %}
-            <tr class="border-b text-center">
-                <td class="p-3">{{ complaint.id }}</td>
-                <td class="p-3">{{ complaint.user.username }}</td>
-                <td class="p-3">{{ complaint.title }}</td>
-                <td class="p-3">{{ complaint.category.name }}</td>
-                <!--  ATTACHMENT COLUMN -->
-                <td class="p-3">
-                    {% if complaint.attachment %}
-                        <a href="{{ complaint.attachment.url }}" 
-                            target="_blank" 
-                            class="text-blue-500 underline block mb-2">
-                            View Attachment
-                        </a>
+    <table class="w-full bg-white shadow rounded text-sm">
+    <thead class="bg-gray-200">
+        <tr class="text-center">
+            <th class="p-3">ID</th>
+            <th class="p-3">Student</th>
+            <th class="p-3">Title</th>
+            <th class="p-3">Category</th>
+            <th class="p-3">Location Info</th>
+            <th class="p-3">Attachment</th>
+            <th class="p-3">Status</th>
+            <th class="p-3">Remark</th>
+            <th class="p-3">Update</th>
+        </tr>
+    </thead>
 
-                        <img src="{{ complaint.attachment.url }}" 
-                            alt="Attachment"
-                            class="w-24 mx-auto rounded border">
-                    {% else %}
-                        <span class="text-gray-400">No Attachment</span>
-                    {% endif %}
-                </td>
-                <td class="p-3">
-                    <form method="post" action="{% url 'update_status' complaint.id %}">
-                        {% csrf_token %}
-                        <select name="status" class="border p-1 rounded w-full">
-                            <option value="open" {% if complaint.status == 'open' %}selected{% endif %}>Open</option>
-                            <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-                            <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
-                        </select>
-                </td>
-                <td class="p-3">
-                        <input type="text" name="remark" value="{{ complaint.remark }}" placeholder="Add remark"
-                               class="border px-2 py-1 rounded w-full">
-                </td>
-                <td class="p-3">
-                        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded w-full mt-1">
-                            Update
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="p-4 text-gray-500 text-center">
-                    No complaints assigned to your department.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <tbody>
+        {% for complaint in complaints %}
+        <tr class="border-b text-center hover:bg-gray-50">
+
+            <td class="p-3">{{ complaint.id }}</td>
+            <td class="p-3">{{ complaint.user.username }}</td>
+            <td class="p-3">{{ complaint.title }}</td>
+            <td class="p-3">{{ complaint.category.name }}</td>
+
+            <!-- Combined Location Column -->
+            <td class="p-3">
+                {% if complaint.dorm_block %}
+                    {{ complaint.dorm_block }}
+                {% elif complaint.building_name %}
+                    {{ complaint.building_name }}
+                {% elif complaint.course_code %}
+                    {{ complaint.course_code }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+
+            <!-- Attachment -->
+            <td class="p-3">
+                {% if complaint.attachment %}
+                    <a href="{{ complaint.attachment.url }}"
+                       target="_blank"
+                       class="text-blue-500 underline">
+                       View
+                    </a>
+                {% else %}
+                    <span class="text-gray-400">None</span>
+                {% endif %}
+            </td>
+
+            <!-- Status + Remark Form -->
+            <td class="p-3">
+                <form method="post" action="{% url 'update_status' complaint.id %}">
+                    {% csrf_token %}
+                    <select name="status" class="border p-1 rounded w-full text-sm">
+                        <option value="open" {% if complaint.status == 'open' %}selected{% endif %}>Open</option>
+                        <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                        <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                    </select>
+            </td>
+
+            <td class="p-3">
+                    <input type="text" name="remark"
+                           value="{{ complaint.remark }}"
+                           placeholder="Add remark"
+                           class="border px-2 py-1 rounded w-full text-sm">
+            </td>
+
+            <td class="p-3">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded w-full text-sm">
+                        Update
+                    </button>
+                </form>
+            </td>
+
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="9" class="p-4 text-gray-500 text-center">
+                No complaints assigned to your department.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 </div>
 

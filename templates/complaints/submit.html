@@ -38,24 +38,21 @@
             </div>
 
             <!-- Dynamic Extra Fields -->
-            <div id="extra-fields" class="space-y-4 hidden">
+            <div id="extra-fields" class="space-y-4">
 
                 <div id="dormitory-field" class="hidden">
-                    <label class="block font-medium mb-1">Block / Dorm Number</label>
-                    <input type="text" name="dorm_block"
-                           class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400">
+                    {{ form.dorm_block.label_tag }}
+                    {{ form.dorm_block|add_class:"w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400" }}
                 </div>
 
                 <div id="internet-field" class="hidden">
-                    <label class="block font-medium mb-1">Building Name</label>
-                    <input type="text" name="building_name"
-                           class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400">
+                    {{ form.building_name.label_tag }}
+                    {{ form.building_name|add_class:"w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400" }}
                 </div>
 
                 <div id="academic-field" class="hidden">
-                    <label class="block font-medium mb-1">Course Code</label>
-                    <input type="text" name="course_code"
-                           class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400">
+                    {{ form.course_code.label_tag }}
+                    {{ form.course_code|add_class:"w-full border rounded px-3 py-2 focus:ring-2 focus:ring-green-400" }}
                 </div>
 
             </div>
@@ -93,12 +90,10 @@
 
 </div>
 
-<!-- JavaScript for Dynamic Category -->
+<!-- JavaScript for Dynamic Category Fields -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const categorySelect = document.getElementById("id_category");
-    const extraFields = document.getElementById("extra-fields");
-
     const dormField = document.getElementById("dormitory-field");
     const internetField = document.getElementById("internet-field");
     const academicField = document.getElementById("academic-field");
@@ -110,14 +105,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     categorySelect.addEventListener("change", function () {
-        const selectedText = categorySelect.options[categorySelect.selectedIndex].text;
         hideAll();
 
-        if (selectedText === "Dormitory Issue") dormField.classList.remove("hidden");
-        else if (selectedText === "Internet Issue") internetField.classList.remove("hidden");
-        else if (selectedText === "Academic Issue") academicField.classList.remove("hidden");
+        const selectedText = categorySelect.options[categorySelect.selectedIndex].text.toLowerCase();
 
-        extraFields.classList.toggle("hidden", selectedText === "");
+        if (selectedText.includes("dormitory")) {
+            dormField.classList.remove("hidden");
+        } 
+        else if (selectedText.includes("internet")) {
+            internetField.classList.remove("hidden");
+        } 
+        else if (selectedText.includes("academic")) {
+            academicField.classList.remove("hidden");
+        }
     });
 });
 </script>

@@ -10,9 +10,15 @@ class ComplaintForm(forms.ModelForm):
 
     class Meta:
         model = Complaint
-        fields = ['title', 'description', 'category', 'priority', 'attachment']
+        fields = ['title', 'description', 'category', 'priority', 'attachment', 'dorm_block' , 'building_name',  'course_code' ]
         
-        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Initially hide location fields
+        self.fields['dorm_block'].required = False
+        self.fields['building_name'].required = False
+        self.fields['course_code'].required = False
+
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
