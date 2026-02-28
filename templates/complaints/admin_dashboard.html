@@ -56,7 +56,9 @@
                     <th class="border px-2 py-1">Student</th>
                     <th class="border px-2 py-1">Title</th>
                     <th class="border px-2 py-1">Category</th>
+                    
                     <th class="border px-2 py-1">Status</th>
+                    <th class="border px-2 py-1">Attachment</th> 
                 </tr>
             </thead>
             <tbody>
@@ -67,6 +69,23 @@
                     <td class="border px-2 py-1">{{ comp.title }}</td>
                     <td class="border px-2 py-1">{{ comp.category.name }}</td>
                     <td class="border px-2 py-1">{{ comp.status|title }}</td>
+                    <!--  ATTACHMENT COLUMN -->
+                    <td class="border px-2 py-1 text-center">
+                        {% if comp.attachment %}
+                            <a href="{{ comp.attachment.url }}" 
+                               target="_blank" 
+                               class="text-blue-600 underline block mb-1">
+                                View
+                            </a>
+
+                            <img src="{{ comp.attachment.url }}" 
+                                class="w-16 mx-auto rounded border">
+                        {% else %}
+                            <span class="text-gray-400">No File</span>
+                        {% endif %}
+                    </td>
+
+                  
                 </tr>
                 {% empty %}
                 <tr>
@@ -188,4 +207,9 @@
         }
     });
 </script>
+
+<h3>Chatbot Management</h3>
+<a href="{% url 'faq_list' %}" class="btn bg-blue-500 text-white px-4 py-2 rounded">
+    Manage FAQs
+</a>
 {% endblock %}

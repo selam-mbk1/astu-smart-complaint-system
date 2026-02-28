@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-4">Manage Chatbot FAQs</h2>
+
+<a href="{% url 'faq_add' %}" class="bg-green-500 text-white px-4 py-2 rounded mb-4 inline-block">
+    Add New FAQ
+</a>
+
+<table class="min-w-full bg-white border rounded shadow">
+    <thead class="bg-gray-200">
+        <tr>
+            <th class="py-2 px-4 border-b">ID</th>
+            <th class="py-2 px-4 border-b">Question</th>
+            <th class="py-2 px-4 border-b">Keywords</th>
+            <th class="py-2 px-4 border-b">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for faq in faqs %}
+        <tr class="hover:bg-gray-50">
+            <td class="py-2 px-4 border-b">{{ faq.id }}</td>
+            <td class="py-2 px-4 border-b">{{ faq.question }}</td>
+            <td class="py-2 px-4 border-b">{{ faq.keywords }}</td>
+            <td class="py-2 px-4 border-b space-x-2">
+                <a href="{% url 'faq_edit' faq.id %}" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</a>
+                <a href="{% url 'faq_delete' faq.id %}" class="bg-red-500 text-white px-2 py-1 rounded">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="py-4 text-center">No FAQs found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

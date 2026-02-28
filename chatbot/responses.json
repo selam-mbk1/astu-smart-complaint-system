@@ -3,5 +3,18 @@
   "wifi": "Internet connectivity problems are handled by IT support.",
   "dorm": "Dormitory issues belong to Housing department.",
   "lab": "Laboratory equipment problems belong to Lab department.",
-  "classroom": "Classroom damage should be reported under Facilities."
+  "classroom": "Classroom damage should be reported under Facilities.",
+  "submit complaint": "To submit a complaint, click 'Submit Complaint' on your dashboard, fill in all fields, and click submit.",
+  "how to submit complaint": "To submit a complaint, go to 'Submit Complaint', fill the form, and click submit.",
+  "complaint form": "You can submit complaints by filling the form under 'Submit Complaint'.",
+  "check status": "You can check the status of your complaints by going to 'My Complaints' on your dashboard.",
+  "my complaints": "Go to 'My Complaints' to see all complaints you submitted and their current status.",
+  "reset password": "To reset your password, click 'Forgot Password' on the login page and follow instructions.",
+  "contact admin": "For any urgent issues, you can contact your admin via the 'Contact' section.",
+  "housing": "Housing department handles dormitory and accommodation issues.",
+  "facilities": "Facilities department handles classrooms, furniture, and general campus maintenance.",
+  "it department": "IT department handles internet, Wi-Fi, and computer lab issues.",
+  "lab equipment": "Lab department handles laboratory equipment problems and requests.",
+  "student support": "For any assistance regarding complaints or accounts, use this chat bot or contact your admin.",
+  "faq": "I can guide you about submitting complaints, checking status, department issues, and general campus support."
 }

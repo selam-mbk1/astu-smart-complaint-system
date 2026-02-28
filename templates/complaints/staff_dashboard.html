@@ -14,6 +14,7 @@
                 <th class="p-3">Student</th>
                 <th class="p-3">Title</th>
                 <th class="p-3">Category</th>
+                <th class="p-3">Attachment</th>
                 <th class="p-3">Status</th>
                 <th class="p-3">Remark</th>
                 <th class="p-3">Update</th>
@@ -26,6 +27,22 @@
                 <td class="p-3">{{ complaint.user.username }}</td>
                 <td class="p-3">{{ complaint.title }}</td>
                 <td class="p-3">{{ complaint.category.name }}</td>
+                <!--  ATTACHMENT COLUMN -->
+                <td class="p-3">
+                    {% if complaint.attachment %}
+                        <a href="{{ complaint.attachment.url }}" 
+                            target="_blank" 
+                            class="text-blue-500 underline block mb-2">
+                            View Attachment
+                        </a>
+
+                        <img src="{{ complaint.attachment.url }}" 
+                            alt="Attachment"
+                            class="w-24 mx-auto rounded border">
+                    {% else %}
+                        <span class="text-gray-400">No Attachment</span>
+                    {% endif %}
+                </td>
                 <td class="p-3">
                     <form method="post" action="{% url 'update_status' complaint.id %}">
                         {% csrf_token %}

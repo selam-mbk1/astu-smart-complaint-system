@@ -1,16 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>AI Assistant</h2>
+<h2>AI Student Assistant</h2>
 
-<div id="chatbox" class="bg-white p-4 h-64 overflow-y-scroll"></div>
+<div id="chatbox" class="bg-white p-4 h-64 overflow-y-scroll border rounded mb-3"></div>
 
-<input id="msg" class="border p-2 w-full">
-<button onclick="sendMsg()" class="bg-blue-500 text-white px-4 py-2">Send</button>
+<input id="msg" class="border p-2 w-full mb-2" placeholder="Type your question...">
+<button onclick="sendMsg()" class="bg-blue-500 text-white px-4 py-2 rounded">Send</button>
 
 <script>
 function sendMsg(){
-    let msg = document.getElementById('msg').value
+    let msgBox = document.getElementById('msg');
+    let chatbox = document.getElementById('chatbox');
+    let userMsg = msgBox.value.trim();
+    if(!userMsg) return;
+
+    // Show user message
+    chatbox.innerHTML += "<p><strong>You:</strong> " + userMsg + "</p>";
+    chatbox.scrollTop = chatbox.scrollHeight;
+    msgBox.value = "";
+
+    // Show typing indicator
+    chatbox.innerHTML += "<p id='typing'><em>Assistant is typing...</em></p>";
+    chatbox.scrollTop = chatbox.scrollHeight;
 
     fetch('/chatbot/api/', {
         method:'POST',
@@ -18,11 +30,18 @@ function sendMsg(){
             'Content-Type':'application/x-www-form-urlencoded',
             'X-CSRFToken':'{{ csrf_token }}'
         },
-        body:'message='+msg
+        body:'message='+encodeURIComponent(userMsg)
     })
     .then(res=>res.json())
     .then(data=>{
-        document.getElementById('chatbox').innerHTML += "<p>"+data.response+"</p>"
+        // Remove typing
+        document.getElementById('typing').remove();
+
+        // Format line breaks for bullets
+        let formatted = data.response.replace(/\n/g, "<br>");
+
+        chatbox.innerHTML += "<p><strong>Assistant:</strong> " + formatted + "</p>";
+        chatbox.scrollTop = chatbox.scrollHeight;
     })
 }
 </script>
