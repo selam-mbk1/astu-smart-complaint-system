@@ -11,7 +11,7 @@ Built with **Django**, **REST API**, and **Tailwind CSS**, this system allows st
 - Submit complaints/issues by category (Dormitory, Academic, Internet/Facilities).
 - Dynamic location fields (Dorm Block, Building Name, Course Code) based on selected category.
 - Attach files (images) with complaints.
-- View complaint status and receive notifications via dashboard and email.
+- View complaint status and receive notifications via dashboard.
 
 ### For Staff
 - View complaints related to their department.
@@ -38,7 +38,7 @@ Built with **Django**, **REST API**, and **Tailwind CSS**, this system allows st
 - Python 3.x
 - Django 5.x
 - Django REST Framework (DRF)
-- SQLite / PostgreSQL
+- SQLite 
 
 **Frontend**
 - HTML, CSS, JavaScript
@@ -54,6 +54,14 @@ Built with **Django**, **REST API**, and **Tailwind CSS**, this system allows st
 - Git & GitHub
 - Virtual Environment (`venv`)
 - VS Code / PyCharm
+
+  astu_system/
+│
+├── accounts/ # Custom user model & authentication
+├── complaints/ # Complaint logic and models
+├── dashboard/ # Role-based dashboards & notifications
+├── chatbot/ # AI assistance feature
+└── astu_system/ # Main project configuration
 
 ---
 
@@ -96,3 +104,9 @@ Students submit complaints using the dashboard.
 Staff members update complaint status and add remarks.
 
 Admins manage users, categories, and monitor analytics.
+
+## Author
+
+### Developed by Selamawit Basaznew
+   Software Engineering Student | Full-Stack Developer
+youtube link: https://youtube.com/@selam_mbk
